@@ -6,7 +6,6 @@ public class PersonContact extends Contact {
         super(name, phone, email);
     }
 
-    // Copy constructor (delegates to Contact.copy-ctor)
     public PersonContact(PersonContact other) {
         super(other);
     }
@@ -16,22 +15,21 @@ public class PersonContact extends Contact {
         return "PERSON";
     }
 
-    // Convenience "with" methods (produce modified copies)
     public PersonContact withName(String newName) {
         PersonContact copy = new PersonContact(this);
-        copy.setName(newName);                 // uses validation
+        copy.setName(newName);
         return copy;
     }
 
     public PersonContact withPhone(String newPhoneDigits) {
         PersonContact copy = new PersonContact(this);
-        copy.setPhone(new PhoneNumber(newPhoneDigits));   // validates 10 digits
+        copy.setPhone(new PhoneNumber(newPhoneDigits));
         return copy;
     }
 
     public PersonContact withEmail(String newEmail) {
         PersonContact copy = new PersonContact(this);
-        copy.setEmail(newEmail);               // uses EmailValidator and blank handling
+        copy.setEmail(newEmail);
         return copy;
     }
 }
