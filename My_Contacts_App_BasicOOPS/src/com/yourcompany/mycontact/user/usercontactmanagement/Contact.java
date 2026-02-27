@@ -26,4 +26,23 @@ public abstract class Contact {
     public LocalDateTime getCreatedAt() { return createdAt; }
 
     public abstract String getContactType();
+    
+
+    @Override
+    public String toString() {
+        return String.format(
+                "=== Contact Details ===\n" +
+                "Type     : %s\n" +
+                "Name     : %s\n" +
+                "Phone    : %s\n" +
+                "Email    : %s\n" +
+                "Created  : %s\n",
+                id,
+                name,
+                phone,
+                email,
+                createdAt
+        );
+
+    }
 }

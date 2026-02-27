@@ -62,8 +62,7 @@ public class Main {
             
             
             // Updation part 
-            User loggedUser =
-					SessionManager.getInstance().getLoggedInUser();
+            User loggedUser = SessionManager.getInstance().getLoggedInUser();
 
 			CommandInvoker invoker = new CommandInvoker();
 
@@ -124,13 +123,9 @@ public class Main {
 
             Contact contact = new PersonContact(cName, new PhoneNumber(cPhone), cEmail);
 
-            System.out.println("\nContact Created Successfully!");
-            System.out.println("ID: " + contact.getId());
-            System.out.println("Created: " + contact.getCreatedAt());
-            System.out.println("Type: " + contact.getContactType());
-            System.out.println("Name: " + contact.getName());
-            System.out.println("Phone: " + contact.getPhone().getNumber());
-            System.out.println("Email: " + contact.getEmail());
+            //  UC5: View Contact Details 
+            System.out.println("\n=== UC-05: View Contact Details ===");
+            System.out.println(contact);
 
         } catch (Exception e) {
             System.out.println("\nRegistration failed: " + e.getMessage());
