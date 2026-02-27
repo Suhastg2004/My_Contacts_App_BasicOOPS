@@ -1,4 +1,4 @@
-//Version 4.0
+//Version 6.0
 //author - Suhas T G
 
 package com.yourcompany.mycontact.user;
@@ -11,7 +11,7 @@ import com.yourcompany.mycontact.user.usercontactmanagement.*;
 import java.util.Scanner;
 
 public class Main {
-
+	
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
@@ -39,11 +39,10 @@ public class Main {
             System.out.println("Email: " + user.getEmail());
             System.out.println("Type: " + user.getUserType());
 
-            // ========= LOGIN =========
+            // UC2 - login
             System.out.println("\n=== Login ===");
 
             AuthService authService;
-
    
             System.out.print("Email: ");
             String loginEmail = scanner.nextLine();
@@ -61,7 +60,8 @@ public class Main {
                 System.out.println("Login Failed.");
             
             
-            // Updation part 
+            // UC3 - Updation part 
+            
             User loggedUser = SessionManager.getInstance().getLoggedInUser();
 
 			CommandInvoker invoker = new CommandInvoker();
@@ -109,7 +109,7 @@ public class Main {
 			System.out.println("Updated Name: " + loggedUser.getName());
 			System.out.println("Updated Email: " + loggedUser.getEmail());
 			
-			// UC4 - CREATE CONTACT (Simple)
+			// UC4 - Create contact (Simple)
             System.out.println("\n=== Create Contact ===");
 
             System.out.print("Contact Name: ");
@@ -123,10 +123,55 @@ public class Main {
 
             Contact contact = new PersonContact(cName, new PhoneNumber(cPhone), cEmail);
 
-            //  UC5: View Contact Details 
+            //  UC5 - View Contact Details 
             System.out.println("\n=== UC-05: View Contact Details ===");
             System.out.println(contact);
+            
+            // UC6 - Update contact details using setters
+            System.out.println("\n=== UC-06: Edit Contact ===");
+            System.out.println("Enter new values (leave blank to keep current)");
 
+            System.out.print("New Name: ");
+            String eName = scanner.nextLine();
+
+            System.out.print("New Phone (10 digits): ");
+            String ePhone = scanner.nextLine();
+
+            System.out.print("New Email: ");
+            String eEmail = scanner.nextLine();
+
+            PersonContact edited = (PersonContact) contact;   // start from original
+            boolean changed = false;
+
+            try {
+                if (!eName.isBlank()) {
+                    edited = edited.withName(eName);
+                    changed = true;
+                }
+                if (!ePhone.isBlank()) {
+                    edited = edited.withPhone(ePhone);  // throws if invalid
+                    changed = true;
+                }
+                if (!eEmail.isBlank()) {
+                    edited = edited.withEmail(eEmail);  // throws if invalid
+                    changed = true;
+                }
+            } catch (IllegalArgumentException ex) {
+                System.out.println("Edit failed: " + ex.getMessage());
+            }
+
+            if (changed) {
+                System.out.println("\nOriginal Contact:");
+                System.out.println(contact);
+
+                System.out.println("\nEdited Contact (new copy):");
+                System.out.println(edited);
+
+                // If you want to accept the edit and replace the original:
+                contact = edited;
+            } else {
+                System.out.println("\nNo changes made.");
+            }
         } catch (Exception e) {
             System.out.println("\nRegistration failed: " + e.getMessage());
         }
