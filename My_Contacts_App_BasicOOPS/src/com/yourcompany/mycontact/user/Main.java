@@ -1,8 +1,13 @@
+//Version 4.0
+//author - Suhas T G
+
 package com.yourcompany.mycontact.user;
 
 import com.yourcompany.mycontact.user.usermanagement.*;
 import com.yourcompany.mycontact.user.userauthentication.*;
 import com.yourcompany.mycontact.user.userprofilemanagement.*;
+import com.yourcompany.mycontact.user.usercontactmanagement.*;
+
 import java.util.Scanner;
 
 public class Main {
@@ -104,6 +109,28 @@ public class Main {
 			System.out.println("\nProfile Updated Successfully!");
 			System.out.println("Updated Name: " + loggedUser.getName());
 			System.out.println("Updated Email: " + loggedUser.getEmail());
+			
+			// UC4 - CREATE CONTACT (Simple)
+            System.out.println("\n=== Create Contact ===");
+
+            System.out.print("Contact Name: ");
+            String cName = scanner.nextLine();
+
+            System.out.print("Phone Number (10 digits): ");
+            String cPhone = scanner.nextLine();
+
+            System.out.print("Email: ");
+            String cEmail = scanner.nextLine();
+
+            Contact contact = new PersonContact(cName, new PhoneNumber(cPhone), cEmail);
+
+            System.out.println("\nContact Created Successfully!");
+            System.out.println("ID: " + contact.getId());
+            System.out.println("Created: " + contact.getCreatedAt());
+            System.out.println("Type: " + contact.getContactType());
+            System.out.println("Name: " + contact.getName());
+            System.out.println("Phone: " + contact.getPhone().getNumber());
+            System.out.println("Email: " + contact.getEmail());
 
         } catch (Exception e) {
             System.out.println("\nRegistration failed: " + e.getMessage());
