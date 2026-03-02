@@ -10,11 +10,11 @@ import java.util.UUID;
 
 public abstract class Contact {
 
-    private UUID id;
+    private final UUID id;
     private String name;
     private PhoneNumber phone;
     private String email;
-    private LocalDateTime createdAt;
+    private final LocalDateTime createdAt;
 
     private boolean deleted;
     private LocalDateTime deletedAt;
@@ -32,6 +32,7 @@ public abstract class Contact {
     }
 
     protected Contact(Contact other) {
+        if (other == null) throw new IllegalArgumentException("Other contact cannot be null");
         this.id = other.id;
         this.createdAt = other.createdAt;
         this.name = other.name;

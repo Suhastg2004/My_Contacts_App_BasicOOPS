@@ -1,4 +1,4 @@
-//Version 8.0
+//Version 11.0
 //author - Suhas T G
 
 package com.yourcompany.mycontact.user;
@@ -197,7 +197,7 @@ public class Main {
 
             System.out.println("\nUpdated List:");
             for (Contact c : contacts) System.out.println(c);
-            
+
             System.out.println("\n=== UC-09: Search Contacts By Keywords ===");
 
             System.out.println("Search by:");
@@ -233,7 +233,7 @@ public class Main {
                     }
                 }
             }
-            
+
             System.out.println("\n=== UC-10: Basic Filtering ===");
             System.out.println("Choose filter:");
             System.out.println("1) By Tag");
@@ -288,8 +288,49 @@ public class Main {
                     System.out.println(c);
                 }
             }
-            
-           
+
+            System.out.println("\n=== UC-11: Create and Manage Tags ===");
+
+            System.out.println("1) Add Tag");
+            System.out.println("2) Remove Tag");
+            System.out.println("3) Show Tags");
+            System.out.print("Choose: ");
+            String tOpt = scanner.nextLine().trim();
+
+            if (contacts.isEmpty()) {
+                System.out.println("No contacts available to tag.");
+            } else {
+                System.out.println("Select a contact number:");
+                for (int i = 0; i < contacts.size(); i++)
+                    System.out.println((i+1) + ") " + contacts.get(i).getName());
+
+                int idx = Integer.parseInt(scanner.nextLine()) - 1;
+                if (idx < 0 || idx >= contacts.size()) {
+                    System.out.println("Invalid choice.");
+                } else {
+                    Contact chosen1 = contacts.get(idx);
+
+                    if (tOpt.equals("1")) {
+                        System.out.print("Enter tag name: ");
+                        String tagLabel = scanner.nextLine();
+                        chosen1.addTag(tagLabel);
+                        System.out.println("Tag added.");
+
+                    } else if (tOpt.equals("2")) {
+                        System.out.print("Enter tag to remove: ");
+                        String removeLabel = scanner.nextLine();
+                        chosen1.removeTag(removeLabel);
+                        System.out.println("Tag removed if it existed.");
+
+                    } else if (tOpt.equals("3")) {
+                        System.out.println("Tags: " + chosen1.getTags());
+
+                    } else {
+                        System.out.println("Invalid option.");
+                    }
+                }
+            }
+
         } catch (Exception e) {
             System.out.println("\nRegistration failed: " + e.getMessage());
         }
