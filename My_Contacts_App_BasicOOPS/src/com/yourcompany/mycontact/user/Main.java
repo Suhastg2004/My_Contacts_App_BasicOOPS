@@ -234,6 +234,61 @@ public class Main {
                 }
             }
             
+            System.out.println("\n=== UC-10: Basic Filtering ===");
+            System.out.println("Choose filter:");
+            System.out.println("1) By Tag");
+            System.out.println("2) By Date Added (on/after)");
+            System.out.println("3) Frequently Contacted (min times)");
+            System.out.println("4) Sort by Name (A->Z)");
+            System.out.println("5) Sort by Date Added (Newest first)");
+            System.out.print("Option: ");
+            String filterOption = scanner.nextLine().trim();
+
+            List<Contact> filtered = new ArrayList<>(contacts);
+
+            if (filterOption.equals("1")) {
+                System.out.print("Enter tag: ");
+                String tag = scanner.nextLine();
+                filtered = new TagFilter(tag).apply(contacts);
+
+            } else if (filterOption.equals("2")) {
+                System.out.print("Enter date (YYYY-MM-DD): ");
+                String dateInput = scanner.nextLine().trim();
+                java.time.LocalDate filterDate = java.time.LocalDate.parse(dateInput);
+                filtered = new DateAfterFilter(filterDate).apply(contacts);
+
+            } else if (filterOption.equals("3")) {
+                System.out.print("Minimum times contacted: ");
+                String countStr = scanner.nextLine().trim();
+                int minTimes = 0;
+                try { minTimes = Integer.parseInt(countStr); } catch (Exception ignored) {}
+
+                Map<UUID, Integer> freqMap = new HashMap<>();
+                for (Contact c : contacts) {
+                    int randomCount = (int)(Math.random() * 10);
+                    freqMap.put(c.getId(), randomCount);
+                }
+                filtered = new FrequentlyContactedFilter(freqMap, minTimes).apply(contacts);
+
+            } else if (filterOption.equals("4")) {
+                Collections.sort(filtered, Comparator.comparing(Contact::getName, String.CASE_INSENSITIVE_ORDER));
+
+            } else if (filterOption.equals("5")) {
+                Collections.sort(filtered, Comparator.comparing(Contact::getCreatedAt).reversed());
+
+            } else {
+                System.out.println("Invalid option.");
+            }
+
+            System.out.println("\nFiltered/Sorted Results:");
+            if (filtered.isEmpty()) {
+                System.out.println("No contacts matched.");
+            } else {
+                for (Contact c : filtered) {
+                    System.out.println(c);
+                }
+            }
+            
            
         } catch (Exception e) {
             System.out.println("\nRegistration failed: " + e.getMessage());
