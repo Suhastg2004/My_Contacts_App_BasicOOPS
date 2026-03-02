@@ -3,6 +3,9 @@ package com.yourcompany.mycontact.user.usercontactmanagement;
 import com.yourcompany.mycontact.user.usermanagement.EmailValidator;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public abstract class Contact {
@@ -15,6 +18,8 @@ public abstract class Contact {
 
     private boolean deleted;
     private LocalDateTime deletedAt;
+
+    private final Set<String> tags = new HashSet<>();
 
     public Contact(String name, PhoneNumber phone, String email) {
         this.id = UUID.randomUUID();
@@ -34,6 +39,7 @@ public abstract class Contact {
         this.email = other.email;
         this.deleted = other.deleted;
         this.deletedAt = other.deletedAt;
+        this.tags.addAll(other.tags);
     }
 
     public UUID getId() { return id; }
@@ -41,9 +47,16 @@ public abstract class Contact {
     public PhoneNumber getPhone() { return phone; }
     public String getEmail() { return email; }
     public LocalDateTime getCreatedAt() { return createdAt; }
-
     public boolean isDeleted() { return deleted; }
     public LocalDateTime getDeletedAt() { return deletedAt; }
+
+    public Set<String> getTags() { return Collections.unmodifiableSet(tags); }
+    public void addTag(String tag) {
+        if (tag != null && !tag.isBlank()) tags.add(tag.trim().toLowerCase());
+    }
+    public void removeTag(String tag) {
+        if (tag != null) tags.remove(tag.trim().toLowerCase());
+    }
 
     public void setName(String name) {
         if (name == null || name.isBlank())
@@ -92,6 +105,7 @@ public abstract class Contact {
                 "Name     : %s%n" +
                 "Phone    : %s%n" +
                 "Email    : %s%n" +
+                "Tags     : %s%n" +
                 "Created  : %s%n" +
                 "Deleted  : %s%n" +
                 "DeletedAt: %s%n",
@@ -100,9 +114,10 @@ public abstract class Contact {
                 name,
                 phone.getNumber(),
                 email == null ? "N/A" : email,
+                tags.isEmpty() ? "—" : String.join(",", tags),
                 createdAt,
                 deleted ? "YES" : "NO",
-                deletedAt == null ? "—" : deletedAt.toString()
+                deletedAt == null ? "—" : deletedAt
         );
     }
 }

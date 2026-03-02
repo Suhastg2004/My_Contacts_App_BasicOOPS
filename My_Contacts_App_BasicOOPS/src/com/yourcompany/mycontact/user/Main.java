@@ -1,4 +1,4 @@
-//Version 6.0
+//Version 8.0
 //author - Suhas T G
 
 package com.yourcompany.mycontact.user;
@@ -8,10 +8,11 @@ import com.yourcompany.mycontact.user.userauthentication.*;
 import com.yourcompany.mycontact.user.userprofilemanagement.*;
 import com.yourcompany.mycontact.user.usercontactmanagement.*;
 
-import java.util.Scanner;
+import java.util.*;
+import java.io.*;
 
 public class Main {
-    
+
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
@@ -42,7 +43,7 @@ public class Main {
             System.out.println("\n=== Login ===");
 
             AuthService authService;
-   
+
             System.out.print("Email: ");
             String loginEmail = scanner.nextLine();
 
@@ -57,7 +58,7 @@ public class Main {
                 System.out.println("Login Successful! Welcome " + result.get().getName());
             else
                 System.out.println("Login Failed.");
-            
+
             User loggedUser = SessionManager.getInstance().getLoggedInUser();
 
             CommandInvoker invoker = new CommandInvoker();
@@ -71,30 +72,30 @@ public class Main {
             int changeChoice = Integer.parseInt(scanner.nextLine());
 
             switch (changeChoice) {
-            case 1:
-                System.out.print("Enter new name: ");
-                String newName = scanner.nextLine();
-                invoker.executeCommand(new UpdateNameCommand(loggedUser, newName));
-                break;
-            case 2:
-                System.out.print("Enter new email: ");
-                String newEmail = scanner.nextLine();
-                invoker.executeCommand(new UpdateEmailCommand(loggedUser, newEmail));
-                break;
-            case 3:
-                System.out.print("Enter new password: ");
-                String newPassword = scanner.nextLine();
-                invoker.executeCommand(new ChangePasswordCommand(loggedUser, newPassword));
-                break;
-            default:
-                System.out.println("Invalid choice.");
-                return;
+                case 1:
+                    System.out.print("Enter new name: ");
+                    String newName = scanner.nextLine();
+                    invoker.executeCommand(new UpdateNameCommand(loggedUser, newName));
+                    break;
+                case 2:
+                    System.out.print("Enter new email: ");
+                    String newEmail = scanner.nextLine();
+                    invoker.executeCommand(new UpdateEmailCommand(loggedUser, newEmail));
+                    break;
+                case 3:
+                    System.out.print("Enter new password: ");
+                    String newPassword = scanner.nextLine();
+                    invoker.executeCommand(new ChangePasswordCommand(loggedUser, newPassword));
+                    break;
+                default:
+                    System.out.println("Invalid choice.");
+                    return;
             }
 
             System.out.println("\nProfile Updated Successfully!");
             System.out.println("Updated Name: " + loggedUser.getName());
             System.out.println("Updated Email: " + loggedUser.getEmail());
-            
+
             System.out.println("\n=== Create Contact ===");
 
             System.out.print("Contact Name: ");
@@ -110,16 +111,12 @@ public class Main {
 
             System.out.println("\n=== UC-05: View Contact Details ===");
             System.out.println(contact);
-            
-            System.out.println("\n=== UC-06: Edit Contact ===");
-            System.out.println("Enter new values (leave blank to keep current)");
 
+            System.out.println("\n=== UC-06: Edit Contact ===");
             System.out.print("New Name: ");
             String eName = scanner.nextLine();
-
             System.out.print("New Phone (10 digits): ");
             String ePhone = scanner.nextLine();
-
             System.out.print("New Email: ");
             String eEmail = scanner.nextLine();
 
@@ -127,62 +124,117 @@ public class Main {
             boolean changed = false;
 
             try {
-                if (!eName.isBlank()) {
-                    edited = edited.withName(eName);
-                    changed = true;
-                }
-                if (!ePhone.isBlank()) {
-                    edited = edited.withPhone(ePhone);
-                    changed = true;
-                }
-                if (!eEmail.isBlank()) {
-                    edited = edited.withEmail(eEmail);
-                    changed = true;
-                }
-            } catch (IllegalArgumentException ex) {
+                if (!eName.isBlank()) { edited = edited.withName(eName); changed = true; }
+                if (!ePhone.isBlank()) { edited = edited.withPhone(ePhone); changed = true; }
+                if (!eEmail.isBlank()) { edited = edited.withEmail(eEmail); changed = true; }
+            } catch (Exception ex) {
                 System.out.println("Edit failed: " + ex.getMessage());
             }
 
             if (changed) {
-                System.out.println("\nOriginal Contact:");
-                System.out.println(contact);
-
-                System.out.println("\nEdited Contact (new copy):");
-                System.out.println(edited);
-
                 contact = edited;
-            } else {
-                System.out.println("\nNo changes made.");
+                System.out.println("\nEdited Contact:");
+                System.out.println(contact);
             }
 
             System.out.println("\n=== UC-07: Delete Contact ===");
-            System.out.print("Do you want to delete this contact? (Y/N): ");
-            String confirm = scanner.nextLine().trim();
-
-            if (confirm.equalsIgnoreCase("Y")) {
-                System.out.print("Soft delete or Hard delete? (S/H): ");
-                String mode = scanner.nextLine().trim();
-
-                try {
-                    if (mode.equalsIgnoreCase("S")) {
-                        contact.markDeleted();
-                        System.out.println("Soft-deleted successfully.");
-                        System.out.println("\nAfter soft delete:");
-                        System.out.println(contact);
-                    } else if (mode.equalsIgnoreCase("H")) {
-                        contact = null;
-                        System.out.println("Hard-deleted successfully.");
-                        System.out.println("Exists after hard delete? NO");
-                    } else {
-                        System.out.println("Unknown option. Skipping delete.");
-                    }
-                } catch (Exception ex) {
-                    System.out.println("Delete failed: " + ex.getMessage());
+            System.out.print("Delete? (Y/N): ");
+            String d = scanner.nextLine();
+            if (d.equalsIgnoreCase("Y")) {
+                System.out.print("Soft or Hard? (S/H): ");
+                String del = scanner.nextLine();
+                if (del.equalsIgnoreCase("S")) {
+                    contact.markDeleted();
+                    System.out.println("Soft deleted.");
+                } else if (del.equalsIgnoreCase("H")) {
+                    contact = null;
+                    System.out.println("Hard deleted.");
                 }
-            } else {
-                System.out.println("Delete canceled.");
             }
 
+            System.out.println("\n=== UC-08: Bulk Operations ===");
+
+            List<Contact> contacts = new ArrayList<>();
+            if (contact != null) contacts.add(contact);
+            contacts.add(new PersonContact("Alice", new PhoneNumber("8888888888"), "alice@mail.com"));
+            contacts.add(new PersonContact("Bob", new PhoneNumber("9999999999"), ""));
+
+            System.out.println("Contacts:");
+            for (int i = 0; i < contacts.size(); i++)
+                System.out.println((i + 1) + ") " + contacts.get(i).getName());
+
+            System.out.print("Select multiple contacts (comma-separated): ");
+            String in = scanner.nextLine();
+            String[] nums = in.split(",");
+
+            List<Integer> chosen = new ArrayList<>();
+            for (String s : nums) {
+                try { chosen.add(Integer.parseInt(s.trim()) - 1); } catch (Exception ignored) {}
+            }
+
+            System.out.println("1) Bulk Soft Delete");
+            System.out.println("2) Bulk Hard Delete");
+            System.out.println("3) Export Selected Contacts");
+            System.out.print("Choose: ");
+            String op = scanner.nextLine();
+
+            if (op.equals("1")) {
+                for (int idx : chosen) contacts.get(idx).markDeleted();
+                System.out.println("Soft deleted selected contacts.");
+            }
+            else if (op.equals("2")) {
+                chosen.sort(Collections.reverseOrder());
+                for (int idx : chosen) contacts.remove(idx);
+                System.out.println("Hard deleted selected contacts.");
+            }
+            else if (op.equals("3")) {
+                try (PrintWriter out = new PrintWriter(new FileWriter("export.txt"))) {
+                    for (int idx : chosen) out.println(contacts.get(idx));
+                    System.out.println("Exported to export.txt");
+                }
+                catch (Exception ex) { System.out.println("Export failed."); }
+            }
+
+            System.out.println("\nUpdated List:");
+            for (Contact c : contacts) System.out.println(c);
+            
+            System.out.println("\n=== UC-09: Search Contacts ===");
+
+            System.out.println("Search by:");
+            System.out.println("1) Name");
+            System.out.println("2) Phone");
+            System.out.println("3) Email");
+            System.out.println("4) Tag");
+            System.out.print("Choose: ");
+            String searchChoice = scanner.nextLine();
+
+            System.out.print("Enter keyword: ");
+            String keyword = scanner.nextLine();
+
+            SearchStrategy strategy = null;
+
+            if (searchChoice.equals("1")) strategy = new NameSearch();
+            else if (searchChoice.equals("2")) strategy = new PhoneSearch();
+            else if (searchChoice.equals("3")) strategy = new EmailSearch();
+            else if (searchChoice.equals("4")) strategy = new TagSearch();
+            else {
+                System.out.println("Invalid choice.");
+            }
+
+            if (strategy != null) {
+                List<Contact> found = strategy.search(contacts, keyword);
+                System.out.println("\nSearch Results:");
+
+                if (found.isEmpty()) {
+                    System.out.println("No matching contacts found.");
+                } else {
+                    for (Contact c : found) {
+                        System.out.println(c);
+                    }
+                }
+            }
+            
+           
         } catch (Exception e) {
             System.out.println("\nRegistration failed: " + e.getMessage());
         }
