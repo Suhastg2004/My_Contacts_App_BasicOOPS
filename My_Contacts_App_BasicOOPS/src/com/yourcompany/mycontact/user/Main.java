@@ -330,6 +330,70 @@ public class Main {
                     }
                 }
             }
+            
+            System.out.println("\n=== UC-12: Apply Tags to Contacts ===");
+            if (contacts.isEmpty()) {
+                System.out.println("No contacts available.");
+            } else {
+                System.out.println("Contacts:");
+                for (int i = 0; i < contacts.size(); i++)
+                    System.out.println((i + 1) + ") " + contacts.get(i).getName());
+
+                System.out.print("Select contacts (comma-separated indices, e.g., 1,3): ");
+                String sel = scanner.nextLine();
+                String[] selParts = sel.split(",");
+                List<Integer> pickedIdx = new ArrayList<>();
+                for (String p : selParts) {
+                    try { pickedIdx.add(Integer.parseInt(p.trim()) - 1); } catch (Exception ignored) {}
+                }
+
+                if (pickedIdx.isEmpty()) {
+                    System.out.println("No valid selections.");
+                } else {
+                    System.out.println("1) Add tags");
+                    System.out.println("2) Remove tags");
+                    System.out.print("Choose: ");
+                    String tagAction = scanner.nextLine().trim();
+
+                    System.out.print("Enter tags (comma-separated, e.g., family,work,friends): ");
+                    String tagsLine = scanner.nextLine();
+                    String[] tagParts = tagsLine.split(",");
+                    List<String> tagsToUse = new ArrayList<>();
+                    for (String t : tagParts) {
+                        String v = t.trim();
+                        if (!v.isBlank()) tagsToUse.add(v);
+                    }
+
+                    if (tagsToUse.isEmpty()) {
+                        System.out.println("No valid tags entered.");
+                    } else {
+                        if (tagAction.equals("1")) {
+                            for (int idx : pickedIdx) {
+                                if (idx >= 0 && idx < contacts.size()) {
+                                    Contact c = contacts.get(idx);
+                                    for (String t : tagsToUse) c.addTag(t);
+                                }
+                            }
+                            System.out.println("Tags added to selected contacts.");
+                        } else if (tagAction.equals("2")) {
+                            for (int idx : pickedIdx) {
+                                if (idx >= 0 && idx < contacts.size()) {
+                                    Contact c = contacts.get(idx);
+                                    for (String t : tagsToUse) c.removeTag(t);
+                                }
+                            }
+                            System.out.println("Tags removed from selected contacts.");
+                        } else {
+                            System.out.println("Invalid action.");
+                        }
+
+                        System.out.println("\nContacts after tagging:");
+                        for (Contact c : contacts) {
+                            System.out.println(c.getName() + " -> " + c.getTags());
+                        }
+                    }
+                }
+            }
 
         } catch (Exception e) {
             System.out.println("\nRegistration failed: " + e.getMessage());

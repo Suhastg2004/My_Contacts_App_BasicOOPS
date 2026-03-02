@@ -3,6 +3,7 @@ package com.yourcompany.mycontact.user.usercontactmanagement;
 import com.yourcompany.mycontact.user.usermanagement.EmailValidator;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -57,6 +58,16 @@ public abstract class Contact {
     }
     public void removeTag(String tag) {
         if (tag != null) tags.remove(tag.trim().toLowerCase());
+    }
+    
+    public void addTags(Collection<String> labels) {
+        if (labels == null) return;
+        for (String lbl : labels) addTag(lbl);
+    }
+
+    public void removeTags(Collection<String> labels) {
+        if (labels == null) return;
+        for (String lbl : labels) removeTag(lbl);
     }
 
     public void setName(String name) {
