@@ -198,7 +198,7 @@ public class Main {
             System.out.println("\nUpdated List:");
             for (Contact c : contacts) System.out.println(c);
             
-            System.out.println("\n=== UC-09: Search Contacts ===");
+            System.out.println("\n=== UC-09: Search Contacts By Keywords ===");
 
             System.out.println("Search by:");
             System.out.println("1) Name");
