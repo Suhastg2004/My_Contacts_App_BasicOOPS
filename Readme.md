@@ -1,4 +1,4 @@
-# My Contacts App (Basic OOPs)
+# My Contacts App (Basic OOP)
 
 This repository is intended for a basic **Contacts Application** project built using object-oriented programming concepts.
 
@@ -50,4 +50,3 @@ The repository is currently initialized and ready for implementation.
 - Input validation
 - Sorting and filtering contacts
 - Unit tests
-
